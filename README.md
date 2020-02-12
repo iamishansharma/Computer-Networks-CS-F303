@@ -1,6 +1,6 @@
 # Computer-Networks
 
-  Labsheets Solutions and Project for Computer Networks (CS F303)
+  Labsheets Solutions and Project for Computer Networks (CS F303) at BITS Pilani, Spring 2020
   
   ## Lab 1
   
