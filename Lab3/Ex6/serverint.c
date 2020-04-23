@@ -74,8 +74,7 @@ int main ()
 	/* ***** Ex 6 here - ***** */ 
 	
 		float num=0;
-		num=strtof(msg,NULL);
-		int nextint=(int)num+1;
+		int nextint=atoi(msg)+1;
 		sprintf(msg, "%d",nextint);
 		
 	/* SENDING NEXT HIGHER INT TO CLIENT */	
