@@ -22,7 +22,7 @@
 
 struct packet
 {
-	char data[PACKET_SIZE+1]; // Main Data
+	char data[PACKET_SIZE]; // Main Data
 };
 
 typedef struct packet Packet;
@@ -31,18 +31,16 @@ struct frame
 {
 	int psize;    // The size (number of bytes) of the payload
 
-	int seq;      // The Seq. No. (in terms of byte) specifying the offset of 
-			      // the first byte of the packet with respect to the input file.
-
 	int lp;       // Whether the packet is last packet or not?
 
+	int seq;      // The Seq. No. (in terms of byte) specifying the offset of 
+			      // the first byte of the packet with respect to the input file.
+	
 	int dora;     // DATA (1) or ACK (0) 
 
-	int ch;       // Channel (0 or 1)
+	int relay;    // Relay (0 for even wala channel and 1 for odd wala channel)
 
 	Packet pack;  // Data Packer
-
-	int totalframes; // Contains totalframes counter
 };
 
 typedef struct frame Frame;
@@ -53,13 +51,8 @@ void printFrame(Frame F)
 	printf("Sequence No: %d\n", F.seq);
 	printf("Last Packet: %d\n", F.lp);
 	printf("Data or Ack: %d\n", F.dora);
-	printf("Channel: %d\n", F.ch);
-	printf("Total Frames: %d\n",F.totalframes);
+	printf("Relay: %d\n", F.relay);
 	printf("Data: %s\n", F.pack.data);
-}
-void printFrameFile(Frame F, FILE *f)
-{
-	fprintf(f,"%s", F.pack.data);
 }
 
 #endif

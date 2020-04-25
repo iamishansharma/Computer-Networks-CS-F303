@@ -63,7 +63,7 @@ int main ()
 		
 		char msg[BUFFERSIZE];
 		int clientLength = sizeof(clientAddress);
-		int clientSocket = accept(serverSocket,(struct sockaddr*)&clientAddress, &clientLength);
+		int clientSocket = accept(serverSocket,(struct sockaddr*)&clientAddress, (socklen_t*)sizeof(clientAddress));
 		
 		if (clientLength < 0) 
 		{
