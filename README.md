@@ -17,13 +17,13 @@
   
   ## Lab 3
   
-	### Socket Programming I 
+  ### Socket Programming I 
 
 		TCP Sockets
   
   ## Lab 4
   
-	### Socket Programming II
+  ### Socket Programming II
 
 		UDP Sockets
 		FTP using TCP Sockets
@@ -31,7 +31,7 @@
 
   ## Lab 5
 
-	### Socket Programming III
+  ### Socket Programming III
 
 		Reliable Data Transmission: Stop and Wait Protocol using UDP Sockets
 
