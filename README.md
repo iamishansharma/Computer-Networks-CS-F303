@@ -19,21 +19,21 @@
   
   ### Socket Programming I 
 
-		TCP Sockets
+	TCP Sockets
   
   ## Lab 4
   
   ### Socket Programming II
 
-		UDP Sockets
-		FTP using TCP Sockets
-		Handling Multiple Clients
+	UDP Sockets
+	FTP using TCP Sockets
+	Handling Multiple Clients
 
   ## Lab 5
 
   ### Socket Programming III
 
-		Reliable Data Transmission: Stop and Wait Protocol using UDP Sockets
+	Reliable Data Transmission: Stop and Wait Protocol using UDP Sockets
 
   ## Lab 6
 
