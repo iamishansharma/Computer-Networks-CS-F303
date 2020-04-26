@@ -12,6 +12,7 @@
 
 #define RETRATIME 2 // (In Terms of Seconds) Retransmission Time
 #define PORT 12345  // SET PORT NUMBER HERE
+#define serAddr "127.0.0.1" // SET SERVER ADDRSS HERE
 
 int state = 0;
 
@@ -72,8 +73,8 @@ int main(int argc, char *argv[])
 	struct sockaddr_in serverAddr;
 	memset(&serverAddr,0,sizeof(serverAddr));
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(atoi(argv[2])); //You can change port number here
-	serverAddr.sin_addr.s_addr = inet_addr(argv[1]); //Specify server's IP address here
+	serverAddr.sin_port = htons(PORT); //You can change port number here
+	serverAddr.sin_addr.s_addr = inet_addr(serAddr); //Specify server's IP address here
 	//printf("Address assigned.\n");
 	
 	/*ESTABLISH CONNECTION*/

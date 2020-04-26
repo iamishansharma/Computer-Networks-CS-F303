@@ -5,8 +5,11 @@
 
 ## Instructions to run
 
-	1. ./server <serveraddress> <portnumber>
-	2. ./client <serveraddress> <portnumber>
+	1. ./server
+	2. ./client
+
+	Server Address has been set as '127.0.0.1' as macro (serAddr) in server.c and client.c
+	Server Port Number has been set as '12345' as macro (PORT) in server.c and client.c
 
 ## Some Details about the code
 

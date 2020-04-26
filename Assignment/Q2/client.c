@@ -10,8 +10,7 @@
 
 #include "packet.h"
 
-#define RETRATIME 2 // (In Terms of Seconds) Retransmission Time
-#define PORT 12345  // SET PORT NUMBER HERE
+#define RETRATIME 2 // (In Terms of Seconds) Retransmission Timeå
 #define BUFLEN 512
 
 int state = 0;
@@ -24,50 +23,87 @@ void die(char *s)
 
 struct timeval timeout;
 
-int main()
+int main(int argc, char *argv[])
 {
+	int port1 = 0;
+
+	printf("Please enter port number for relay channel 1: ");
+	scanf("%d",&port1);
+
+	int port2 = 0;
+
+	printf("Please enter port number for relay channel 2: ");
+	scanf("%d",&port2);
+
 	timeout.tv_sec = RETRATIME; // sets the timeout time as 2 seconds
 	timeout.tv_usec = 0;
 
-	struct sockaddr_in si_other;
-	int s, i, slen=sizeof(si_other);
-	char buf[BUFLEN];
-	char message[BUFLEN];
-	memset(buf,0,BUFLEN);
-	memset(message,0,BUFLEN);
+	struct sockaddr_in relay1, relay2;
+
+	int s1, slen = sizeof(relay1);
+
+	char gaya1[BUFLEN];
+	char aaya1[BUFLEN];
+	char gaya2[BUFLEN];
+	char aaya2[BUFLEN];
+
+	memset(gaya1,0,BUFLEN);
+	memset(aaya1,0,BUFLEN);
+	memset(gaya2,0,BUFLEN);
+	memset(aaya2,0,BUFLEN);
  
-	if ((s=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+	if((s1 = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 	{
 		die("socket");
 	}
- 
-	memset((char *) &si_other, 0, sizeof(si_other));
-	si_other.sin_family = AF_INET;
-	si_other.sin_port = htons(PORT);
-	si_other.sin_addr.s_addr = inet_addr("192.168.225.51");
+
+	relay1.sin_family = AF_INET;
+	relay1.sin_port = htons(port1);
+	relay1.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+	relay2.sin_family = AF_INET;
+	relay2.sin_port = htons(port2);
+	relay2.sin_addr.s_addr = inet_addr("127.0.0.1");
 	
 	while(1)
 	{
-		printf("Enter your guess (Either NUmber (1-6) or F1 Driver Names): ");
-		gets(message);
-		 
-		//send the message
-		if (sendto(s,message,strlen(message),0,(struct sockaddr *) &si_other, slen) == -1)
+		fflush(stdout);
+		fflush(stdin);
+
+		printf("\nEnter Data for Relay 1: \n");
+		gets(gaya1);
+
+		if(sendto(s1, gaya1, BUFLEN, 0, (struct sockaddr*) &relay1, slen) == -1)
 		{
 			die("sendto()");
 		}
 
-		//receive a reply and print it
-		memset(buf,'\0', BUFLEN);
-		//try to receive some data, this is a blocking call
-		if (recvfrom(s,buf,BUFLEN,0,(struct sockaddr *)&si_other,(socklen_t *)&slen) == -1)
+		if(recvfrom(s1, aaya1, BUFLEN, 0, (struct sockaddr *) &relay1, (socklen_t *)&slen) == -1)
 		{
 			die("recvfrom()");
 		}
-		puts(buf);
+
+		printf("%s\n",aaya1);
+
+		fflush(stdout);
+		fflush(stdin);
+
+		printf("\nEnter Data for Relay 2: \n");
+		gets(gaya2);
+
+		if(sendto(s1, gaya2, BUFLEN, 0, (struct sockaddr*) &relay2, slen) == -1)
+		{
+			die("sendto()");
+		}
+
+		if(recvfrom(s1, aaya2, BUFLEN, 0, (struct sockaddr *) &relay2, (socklen_t *)&slen) == -1)
+		{
+			die("recvfrom()");
+		}
+
+		printf("%s\n",aaya2);
 	}
  
-	close(s);
+	close(s1);
 	return 0;
-
 }

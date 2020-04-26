@@ -12,7 +12,8 @@
 
 #define MAXPENDING 2
 #define PDR 10 		// Packet Drop Rate
-#define PORT 12345
+#define PORT 12345  // SET PORT NUMBER HERE
+#define serAddr "127.0.0.1" // SET SERVER ADDRSS HERE
 
 void die(char *s)
 {
@@ -57,8 +58,8 @@ int main(int argc, char *argv[])
 	struct sockaddr_in serverAddress, clientAddress;
 	memset(&serverAddress, 0, sizeof(serverAddress));
 	serverAddress.sin_family = AF_INET;
-	serverAddress.sin_port = htons(atoi(argv[2]));
-	serverAddress.sin_addr.s_addr = inet_addr(argv[1]);
+	serverAddress.sin_port = htons(PORT);
+	serverAddress.sin_addr.s_addr = inet_addr(serAddr);
 
 	int binder = bind(masterSocket,(struct sockaddr*)&serverAddress, sizeof(serverAddress));
 
