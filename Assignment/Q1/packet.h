@@ -17,8 +17,10 @@
 #include <sys/types.h>
 #include <netinet/in.h>  
 #include <sys/time.h> 	//FD_SET, FD_ISSET, FD_ZERO macros
+#include <time.h>
 
 #define PACKET_SIZE 100 // Packet Size
+#define serAddr "127.0.0.1" // SET SERVER ADDRSS HERE
 
 struct packet
 {

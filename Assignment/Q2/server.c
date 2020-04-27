@@ -12,7 +12,8 @@
 #include "packet.h"
 
 #define MAXPENDING 2
-#define BUFLEN 512
+
+char cctime[20];
 
 void die(char *s)
 {
@@ -22,29 +23,41 @@ void die(char *s)
 
 int main(int argc, char *argv[])
 {
+	if(argc != 2)
+	{
+		printf("Command Line Arguments on as per format. Check readme.txt.\n");
+		exit(1);
+	}
+	
+	char filename[50];
+	memset(filename,0,50);
+	strcpy(filename,argv[1]);	// SET output file name here
+
+	FILE *f = fopen(filename,"w");
+
+	if(f == NULL)
+	{
+		printf("Error opening file %s",filename);
+		exit(1);
+	}
+
 	int port1 = 0;
 
-	printf("Please enter the port number you want the server on: ");
+	printf("Port Number for Server:  ");
 	scanf("%d",&port1);
 
 	int relayport1 = 0;
 
-	printf("Please enter the port number you will put the relay 1 on: ");
+	printf("Port Number for Relay 1: ");
 	scanf("%d",&relayport1);
 
 	int relayport2 = 0;
 
-	printf("Please enter the port number you will put the relay 2 on: ");
+	printf("Port Number for Relay 2: ");
 	scanf("%d",&relayport2);
 
 	struct sockaddr_in si_me, si_other;
 	int s, i, slen = sizeof(si_other) , recv_len;
-
-	char aaya1[BUFLEN];
-	memset(aaya1,0,BUFLEN);
-
-	char gaya1[BUFLEN];
-	memset(gaya1,0,BUFLEN);
 	
 	if ((s=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 	{
@@ -55,31 +68,55 @@ int main(int argc, char *argv[])
 	 
 	si_me.sin_family = AF_INET;
 	si_me.sin_port = htons(port1);
-	si_me.sin_addr.s_addr = inet_addr("127.0.0.1");
+	si_me.sin_addr.s_addr = inet_addr(server_addr);
 
 	if(bind(s, (struct sockaddr*)&si_me, sizeof(si_me)) == -1)
 	{
 		die("bind");
 	}
-	 
-	while(1)
+
+	printf("Server running .....\n");
+	
+	Frame buffer[WINDOW_SIZE];
+
+	printf("\n-----------------------------------------------------------------\n");
+	printf("NODENAME EVENT     TIMESTAMP      PKTTYPE SEQ   SOURCE      DEST\n");
+	printf("-----------------------------------------------------------------\n");
+
+	Frame recvframe;
+	Frame sendACK;
+
+	int eofflag = 0;
+
+	while(!eofflag)
 	{
-		if((recv_len = recvfrom(s, aaya1, BUFLEN, 0, (struct sockaddr *) &si_other, (socklen_t *)&slen)) == -1)
+		getCurrentTime();
+		if(recvfrom(s, &recvframe, sizeof(Frame), 0, (struct sockaddr *) &si_other, (socklen_t *)&slen) == -1)
 		{
 			die("recvfrom()");
 		}
+		recvframe.eve = 1;
+		printLog(recvframe.dest, recvframe);
 
-		if(si_other.sin_port == htons(relayport1))
-			strcat(aaya1," Yes relay 1 se aaya.");
-		else
-			strcat(aaya1," Yes relay 2 se aaya.");
+		printFrameFile(recvframe,f);
 
-		if(sendto(s, aaya1, BUFLEN, 0, (struct sockaddr*) &si_other, slen) == -1)
+		sendACK = recvframe;
+		sendACK.dora = 0;
+		sendACK.src = 3;
+		sendACK.dest = recvframe.src;
+
+		getCurrentTime();
+		if(sendto(s, &sendACK, sizeof(Frame), 0, (struct sockaddr*) &si_other, slen) == -1)
 		{
 			die("sendto()");
 		}
-	}
+		sendACK.eve = 0;
+		printLog(recvframe.dest, sendACK);
 
+		if(recvframe.lp)
+			eofflag = 1;
+	}
+	printf("-----------------------------------------------------------------\n");
 	close(s);
 	return 0;
 }

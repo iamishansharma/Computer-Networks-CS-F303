@@ -12,8 +12,6 @@
 
 #define MAXPENDING 2
 #define PDR 10 		// Packet Drop Rate
-#define PORT 12345  // SET PORT NUMBER HERE
-#define serAddr "127.0.0.1" // SET SERVER ADDRSS HERE
 
 void die(char *s)
 {
@@ -23,10 +21,20 @@ void die(char *s)
 
 int main(int argc, char *argv[])
 {
-	FILE *f = fopen("output.txt","w");
+	if(argc != 3)
+	{
+		printf("Command Line Arguments on as per format. Check readme.txt.\n");
+		exit(1);
+	}
+	
+	char filename[100];
+	memset(filename,0,100);
+	strcpy(filename,argv[2]); // Set file name here to be transmitted
+	FILE *f = fopen(filename,"w");
+
 	if(f == NULL)
 	{
-		printf("Error Opening The File output.txt");
+		printf("Error Opening The File %s",argv[2]);
 		exit(0);
 	}
 
@@ -58,7 +66,7 @@ int main(int argc, char *argv[])
 	struct sockaddr_in serverAddress, clientAddress;
 	memset(&serverAddress, 0, sizeof(serverAddress));
 	serverAddress.sin_family = AF_INET;
-	serverAddress.sin_port = htons(PORT);
+	serverAddress.sin_port = htons(atoi(argv[1]));
 	serverAddress.sin_addr.s_addr = inet_addr(serAddr);
 
 	int binder = bind(masterSocket,(struct sockaddr*)&serverAddress, sizeof(serverAddress));
@@ -85,6 +93,8 @@ int main(int argc, char *argv[])
 	int skipcount = 0;
 
 	srand(time(0));
+
+	printf("\n***** Server Trace *****\n\n");
 
 	while(!eofflag)
 	{
@@ -126,6 +136,8 @@ int main(int argc, char *argv[])
 		}
 
 		Frame newFrame;
+		char isdropped[5];
+		memset(isdropped,0,5);
 
 		if(FD_ISSET(client_socket[0], &readfds))
 		{
@@ -137,6 +149,8 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
+				int isd = 0;
+
 				if(firsttotfra == 0)
 				{
 					totalframes = newFrame.totalframes;
@@ -151,6 +165,7 @@ int main(int argc, char *argv[])
 
 				if(skip == 1 && skipcount != 0)
 				{
+					isd = 1;
 					skipcount--;
 					goto droppacket0;
 				}
@@ -174,7 +189,15 @@ int main(int argc, char *argv[])
 					exit(0);
 				}
 
-				droppacket0: ;
+				droppacket0: 
+							if(isd)
+								strcpy(isdropped,"Yes");
+							else
+								strcpy(isdropped,"No");
+
+							printf("RCVD PCK: Seq No: %d of size %d bytes from channel %d, Dropped: %s\n", newFrame.seq, newFrame.psize, newFrame.ch, isdropped);
+							if(!isd)
+								printf("SENT ACK: for PKT with Seq. No. %d from channel %d\n", newACK.seq+1, newACK.ch);
 			}
 		}
 
@@ -188,6 +211,8 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
+				int isd = 0;
+
 				if(firsttotfra == 0)
 				{
 					totalframes = newFrame.totalframes;
@@ -202,6 +227,7 @@ int main(int argc, char *argv[])
 
 				if(skip == 1 && skipcount != 0)
 				{
+					isd = 1;
 					skipcount--;
 					goto droppacket1;
 				}
@@ -225,7 +251,14 @@ int main(int argc, char *argv[])
 					exit(0);
 				}
 
-				droppacket1: ;
+				droppacket1: if(isd)
+								strcpy(isdropped,"Yes");
+							else
+								strcpy(isdropped,"No");
+
+							printf("RCVD PCK: Seq No: %d of size %d bytes from channel %d, Dropped: %s\n", newFrame.seq, newFrame.psize, newFrame.ch, isdropped);
+							if(!isd)
+								printf("SENT ACK: for PKT with Seq. No. %d from channel %d\n", newACK.seq+1, newACK.ch);
 			}
 		}
 	}

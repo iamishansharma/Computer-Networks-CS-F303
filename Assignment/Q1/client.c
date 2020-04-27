@@ -11,8 +11,6 @@
 #include "packet.h"
 
 #define RETRATIME 2 // (In Terms of Seconds) Retransmission Time
-#define PORT 12345  // SET PORT NUMBER HERE
-#define serAddr "127.0.0.1" // SET SERVER ADDRSS HERE
 
 int state = 0;
 
@@ -26,6 +24,12 @@ struct timeval timeout;
 
 int main(int argc, char *argv[])
 {
+	if(argc != 3)
+	{
+		printf("Command Line Arguments on as per format. Check readme.txt.\n");
+		exit(1);
+	}
+
 	timeout.tv_sec = RETRATIME; // sets the timeout time as 2 seconds
 	timeout.tv_usec = 0;
 
@@ -34,16 +38,14 @@ int main(int argc, char *argv[])
 	char buffer[PACKET_SIZE+1];
 
 	char filename[100];
-
 	memset(filename,0,100);
-
-	strcpy(filename,"input.txt"); // Set file name here to be transmitted
+	strcpy(filename,argv[2]); // Set file name here to be transmitted
 
 	FILE *f = fopen(filename,"r");
 
 	if(f == NULL)
 	{
-		printf("Error Opening The File input.txt");
+		printf("Error Opening The File %s",argv[2]);
 		exit(0);
 	}
 
@@ -73,7 +75,7 @@ int main(int argc, char *argv[])
 	struct sockaddr_in serverAddr;
 	memset(&serverAddr,0,sizeof(serverAddr));
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(PORT); //You can change port number here
+	serverAddr.sin_port = htons(atoi(argv[1])); //You can change port number here
 	serverAddr.sin_addr.s_addr = inet_addr(serAddr); //Specify server's IP address here
 	//printf("Address assigned.\n");
 	
@@ -166,6 +168,8 @@ int main(int argc, char *argv[])
 	int jeof = 0;
 	int j1eof = 0;
 
+	printf("\n***** Client Trace *****\n\n");
+
 	while(!eofflag)
 	{
 		Frame currentFrame = frames[j];
@@ -194,6 +198,8 @@ int main(int argc, char *argv[])
 						printf("Error while sending the frame");
 						exit(0);
 					}
+
+					printf("SENT PCK: Seq No: %d of size %d bytes from channel %d\n", currentFrame.seq, currentFrame.psize, currentFrame.ch);
 
 					state = 1;
 					break;
@@ -232,6 +238,8 @@ int main(int argc, char *argv[])
 						}
 						else
 							state = 2;
+
+						printf("RCVD ACK: for PKT with Seq. No. %d from channel %d\n", recvACK.seq+1, recvACK.ch);
 					}
 
 					break;
@@ -245,6 +253,8 @@ int main(int argc, char *argv[])
 						printf("Error while sending the frame");
 						exit(0);
 					}
+
+					printf("SENT PCK: Seq No: %d of size %d bytes from channel %d\n", nextFrame.seq, nextFrame.psize, nextFrame.ch);
 
 					state = 3;
 					break;
@@ -279,6 +289,8 @@ int main(int argc, char *argv[])
 
 						if(j1eof)
 							eofflag = 1;
+
+						printf("RCVD ACK: for PKT with Seq. No. %d from channel %d\n", nextrecvACK.seq+1, nextrecvACK.ch);
 
 						j = j + 2;
 					}
