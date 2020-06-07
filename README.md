@@ -4,8 +4,8 @@ Labsheets Solutions and Project for Computer Networks (CS F303) at BITS Pilani, 
 
 ## Programming Assignment
 
-  Q1. Stop and Wait protocol through multiple channels using TCP sockets
-  Q2. Selective Repeat using relays over UDP sockets
+    Q1. Stop and Wait protocol through multiple channels using TCP sockets
+    Q2. Selective Repeat using relays over UDP sockets
   
 ## Lab 1
   
