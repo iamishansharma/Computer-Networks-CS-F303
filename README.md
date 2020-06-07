@@ -1,44 +1,40 @@
 # Computer-Networks
 
-  Labsheets Solutions and Project for Computer Networks (CS F303) at BITS Pilani, Spring 2020
+Labsheets Solutions and Project for Computer Networks (CS F303) at BITS Pilani, Spring 2020
 
-  ## Programming Assignment
+## Programming Assignment
 
-  	Q1. Stop and Wait protocol through multiple channels using TCP sockets
-  	Q2. Selective Repeat using relays over UDP sockets
+Q1. Stop and Wait protocol through multiple channels using TCP sockets
+Q2. Selective Repeat using relays over UDP sockets
   
-  ## Lab 1
+## Lab 1
   
-	Wireshark Basics
+Wireshark Basics
   
-  ## Lab 2
+## Lab 2
   
-	Monitoring FTP and DNS using Wireshark
+Monitoring FTP and DNS using Wireshark
   
-  ## Lab 3
+## Lab 3
   
-  ### Socket Programming I 
+### Socket Programming I 
 
-	TCP Sockets
+TCP Sockets
   
-  ## Lab 4
+## Lab 4
   
-  ### Socket Programming II
+### Socket Programming II
 
-	UDP Sockets
-	FTP using TCP Sockets
-	Handling Multiple Clients
+UDP Sockets
+FTP using TCP Sockets
+Handling Multiple Clients
 
-  ## Lab 5
+## Lab 5
 
-  ### Socket Programming III
+### Socket Programming III
 
-	Reliable Data Transmission: Stop and Wait Protocol using UDP Sockets
+Reliable Data Transmission: Stop and Wait Protocol using UDP Sockets
 
-  ## Lab 6
+## Lab 6
 
-  	Network simulattions using ns2
-
-
-
-	
+Network simulattions using ns2
