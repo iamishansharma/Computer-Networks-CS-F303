@@ -59,10 +59,6 @@
 
 ## Some Details about the code
 
-	I couldn't finish the implementation of Selective Repeat Protocol.
-	
-	Hence the partial code with transfer of client to server of input file over UDP through relays.
-
 	Macros: 
 
 		Retransmission Time macro is defined in client.c
